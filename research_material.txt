@@ -1,0 +1,5 @@
+https://www.geeksforgeeks.org/trie-insert-and-search/ (Trie from geeksforgeeks)
+
+https://stackoverflow.com/questions/4737904/difference-between-tries-and-trees (tree vs trie)
+
+https://www.youtube.com/watch?v=-urNrIAQnNo (Video on Trie)
