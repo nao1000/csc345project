@@ -8,9 +8,7 @@ public interface Trie {
 
     // Delete a word from the Trie
     public boolean delWord(String word);
-
-    public void moveCurr(TrieNode newCurr);
-
+    
     // check if a word is in the Trie
     public boolean isWord(String str);
 
