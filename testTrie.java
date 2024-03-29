@@ -13,8 +13,19 @@ public class testTrie {
         trie.addWord("cacti");
         trie.addWord("do");
 
-        assertTrue(trie.isWord("cattle"));
+        assertTrue(trie.isWord("cat"));
+        assertTrue(trie.isWord("cacti"));
+       
+        assertTrue(trie.isWord("do"));
         assertTrue(!trie.isWord("done"));
+        assertTrue(!trie.isWord("at"));
+        assertTrue(!trie.isWord("don"));
+        assertTrue(trie.isWord("cattle"));
+        assertTrue(!trie.isWord("ready"));
+
+        trie.delWord("cattle");
+        assertTrue(!trie.isWord("cattle"));
+        assertTrue(trie.isWord("cat"));
     }
 
     public static void main(String[] args) {
@@ -22,6 +33,11 @@ public class testTrie {
 
         trie.addWord("cat");
         trie.addWord("cattle");
-        assertTrue(trie.isWord("cattle"));
+        trie.addWord("cactus");
+        trie.addWord("cacti");
+        trie.addWord("do");
+        assertTrue(trie.isWord("cat"));
+        System.out.print("leo");
+        //assertTrue(trie.isWord("cattle"));
     }
 }
