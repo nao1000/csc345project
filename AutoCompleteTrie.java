@@ -23,65 +23,79 @@ public class AutoCompleteTrie implements Trie {
             return;
         }
         TrieNode[] nodeArr = curr.getNodes();
+        boolean flag = false;
         for (TrieNode node : nodeArr) {
             if (node == null) {
+                flag = true;
                 break;
             }
             if (word.substring(0, 1).equals(node.getKey())) {
-                this.moveCurr(node);
-                if (word.length() == 1){ 
+                curr = node;
+                if (word.length() == 1) {
+                    TrieNode newWord = new TrieNode(word.substring(0, 1));
+                    int index = curr.getCount();
+                    nodeArr[index] = newWord;
+                    curr.incrCount();
+                    curr = newWord;
                     addWord("");
-                }
-                else {
+                } else {
                     addWord(word.substring(1, word.length()));
                 }
+                break;
             }
         }
-
-        TrieNode newWord = new TrieNode(word.substring(0, 1));
-        int index = curr.getCount();
-        nodeArr[index] = newWord;
-        curr.incrCount();
-        curr = newWord;
-        if (word.length() == 1){ 
-            addWord("");
-        }
-        else {
-            addWord(word.substring(1, word.length()));
+        if (flag) {
+            TrieNode newWord = new TrieNode(word.substring(0, 1));
+            int index = curr.getCount();
+            nodeArr[index] = newWord;
+            curr.incrCount();
+            curr = newWord;
+            if (word.length() == 1) {
+                addWord("");
+            } else {
+                addWord(word.substring(1, word.length()));
+            }
         }
 
     }
 
     // Delete a word from the Trie
     public boolean delWord(String word) {
-        return true;
+        if (word.length() == 0 && curr.isWord()) {
+            curr.unsetTerminal();
+            curr = root;
+            return true;
+        } else {
+            TrieNode[] nodeArr = curr.getNodes();
+            for (TrieNode node : nodeArr) {
+                if (node != null && word.substring(0, 1).equals(node.getKey())) {
+                    curr = node;
+                    return this.delWord(word.substring(1, word.length()));
+
+                }
+            }
+            return false;
+        }      
     }
 
-    public void moveCurr(TrieNode newCurr) {
-        curr = newCurr;
-    }
-    
     // check if a word is in the Trie
     public boolean isWord(String word) {
         if (word.length() == 0 && curr.isWord()) {
+            curr = root;
             return true;
-        }
+        } else {
+            TrieNode[] nodeArr = curr.getNodes();
+            for (TrieNode node : nodeArr) {
+                if (node != null && word.substring(0, 1).equals(node.getKey())) {
+                    curr = node;
+                    return this.isWord(word.substring(1, word.length()));
 
-        TrieNode[] nodeArr = curr.getNodes();
-        for (TrieNode node : nodeArr) {
-            if (word.substring(0, 1).equals(curr.getKey())) {
-                curr = node;
-                if (word.length() == 1){ 
-                    this.isWord("");
                 }
-                else {
-                    this.isWord(word.substring(1, word.length()));
-                }
-                
             }
+            curr = root;
+            return false;
         }
 
-        return false;
     }
 
     // returns an array of potential strings that come from a certain input
