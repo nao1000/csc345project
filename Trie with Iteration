@@ -1,0 +1,96 @@
+// Hi Nathan and Kory
+
+public class Trie {
+    // This actually makes the TrieNode Structure, iterating through
+    // making more and more letters depending on the length of the word
+
+    static class TrieNode {
+        TrieNode[] children = new TrieNode[26];
+        boolean isEndOfWord;
+
+        TrieNode() {
+            isEndOfWord = false;
+            for (int i = 0; i < 26; i++)
+                children[i] = null;
+        }
+    };
+
+    static TrieNode root;
+    public static int wordCount = 0;
+
+    // This function is used to insert a word into the trie
+    // It goes level by level and makes a new TrieNode if it
+    // needs to. It sets a boolean value on the last character
+    static void insert(String word) {
+        int level;
+        int length = word.length();
+        int index;
+        TrieNode curr = root;
+        for (level = 0; level < length; level++) {
+            index = word.charAt(level) - 'a';
+            if (curr.children[index] == null)
+                curr.children[index] = new TrieNode();
+            curr = curr.children[index];
+        }
+        wordCount += 1;
+        curr.isEndOfWord = true;
+    }
+
+    // This function searchs for a word and returns true or false
+    // depending on if it was in the trie
+    static boolean search(String word) {
+        int level;
+        int length = word.length();
+        int index;
+        TrieNode curr = root;
+
+        for (level = 0; level < length; level++) {
+            index = word.charAt(level) - 'a';
+            if (curr.children[index] == null)
+                return false;
+            curr = curr.children[index];
+        }
+
+        return (curr.isEndOfWord);
+    }
+
+    // This function deletes a word from the trie by changing the boolean
+    // value on the last character of the word
+    static void delete(String word) {
+        int level;
+        int length = word.length();
+        int index;
+        TrieNode curr = root;
+
+        boolean isWord = search(word);
+        if (isWord == false) {
+            return;
+        } else {
+            for (level = 0; level < length; level++) {
+                index = word.charAt(level) - 'a';
+                curr = curr.children[index];
+            }
+            curr.isEndOfWord = false;
+        }
+        wordCount -= 1;
+    }
+
+    // This returns the current amount of words in the trie
+    static int wordCount() {
+        return wordCount;
+    }
+
+    public static void main(String args[]) {
+        root = new TrieNode();
+        System.out.println(wordCount());
+        insert("ant");
+        insert("any");
+        insert("and");
+        System.out.println(search("ant"));
+        System.out.println(search("dog"));
+        delete("ant");
+        System.out.println(search("ant"));
+        System.out.println(search("dog"));
+        System.out.println(wordCount());
+    }
+}
