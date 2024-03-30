@@ -19,4 +19,6 @@ public interface Trie {
     // returns an array of potential strings that come from a certain input
     // potential strings are relevant to the tone of the current input
     public String[] autoComplete(String str, float sent);
+
+    
 }
