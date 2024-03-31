@@ -1,11 +1,11 @@
 public class TrieNode {
 
     private boolean terminal;
-    private String key;
+    private char key;
     private TrieNode[] nextChars;
     private int nextCount;
 
-    public TrieNode(String inKey) {
+    public TrieNode(char inKey) {
         key = inKey;
         nextChars = new TrieNode[26];
         nextCount = 0;
@@ -38,7 +38,7 @@ public class TrieNode {
         return nextChars;
     }
 
-    public String getKey() {
+    public char getKey() {
         return key;
     }
 

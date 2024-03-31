@@ -5,7 +5,7 @@ public class AutoCompleteTrie implements Trie {
     private int wordCount;
 
     public AutoCompleteTrie() {
-        root = new TrieNode("");
+        root = new TrieNode(' ');
         curr = root;
         wordCount = 0;
     }
@@ -22,40 +22,15 @@ public class AutoCompleteTrie implements Trie {
             curr = root;
             return;
         }
-        TrieNode[] nodeArr = curr.getNodes();
-        boolean flag = false;
-        for (TrieNode node : nodeArr) {
-            if (node == null) {
-                flag = true;
-                break;
-            }
-            if (word.substring(0, 1).equals(node.getKey())) {
-                curr = node;
-                if (word.length() == 1) {
-                    TrieNode newWord = new TrieNode(word.substring(0, 1));
-                    int index = curr.getCount();
-                    nodeArr[index] = newWord;
-                    curr.incrCount();
-                    curr = newWord;
-                    addWord("");
-                } else {
-                    addWord(word.substring(1, word.length()));
-                }
-                break;
-            }
+        TrieNode[] nextChars = curr.getNodes();
+        if (nextChars[word.charAt(0) - 'a'] == null) {
+            TrieNode newNode = new TrieNode(word.charAt(0));
+            nextChars[word.charAt(0) - 'a'] = newNode;
+            curr = newNode;
+        } else {
+            curr = nextChars[word.charAt(0) - 'a'];
         }
-        if (flag) {
-            TrieNode newWord = new TrieNode(word.substring(0, 1));
-            int index = curr.getCount();
-            nodeArr[index] = newWord;
-            curr.incrCount();
-            curr = newWord;
-            if (word.length() == 1) {
-                addWord("");
-            } else {
-                addWord(word.substring(1, word.length()));
-            }
-        }
+        addWord(word.substring(1, word.length()));
 
     }
 
@@ -65,17 +40,20 @@ public class AutoCompleteTrie implements Trie {
             curr.unsetTerminal();
             curr = root;
             return true;
-        } else {
-            TrieNode[] nodeArr = curr.getNodes();
-            for (TrieNode node : nodeArr) {
-                if (node != null && word.substring(0, 1).equals(node.getKey())) {
-                    curr = node;
-                    return this.delWord(word.substring(1, word.length()));
-
-                }
+        }
+        else if (word.length() == 0 && !curr.isWord()) {
+                curr = root;
+                return false;
             }
+        TrieNode[] nextChars = curr.getNodes();
+        if (nextChars[word.charAt(0) - 'a'] == null) {
+            curr = root;
             return false;
-        }      
+        } else {
+            curr = nextChars[word.charAt(0) - 'a'];
+        }
+        return delWord(word.substring(1, word.length()));
+        
     }
 
     // check if a word is in the Trie
@@ -83,19 +61,19 @@ public class AutoCompleteTrie implements Trie {
         if (word.length() == 0 && curr.isWord()) {
             curr = root;
             return true;
-        } else {
-            TrieNode[] nodeArr = curr.getNodes();
-            for (TrieNode node : nodeArr) {
-                if (node != null && word.substring(0, 1).equals(node.getKey())) {
-                    curr = node;
-                    return this.isWord(word.substring(1, word.length()));
-
-                }
-            }
+        }
+        else if (word.length() == 0 && !curr.isWord()) {
             curr = root;
             return false;
         }
-
+        TrieNode[] nextChars = curr.getNodes();
+        if (nextChars[word.charAt(0) - 'a'] == null) {
+            curr = root;
+            return false;
+        } else {
+            curr = nextChars[word.charAt(0) - 'a'];
+        }
+        return isWord(word.substring(1, word.length()));
     }
 
     // returns an array of potential strings that come from a certain input
