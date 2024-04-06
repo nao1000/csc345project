@@ -56,7 +56,11 @@ public class testTrie {
     public static void main(String[] args) throws IOException {
         testTrie tryMe = new testTrie();
         tryMe.addDict();
-        String[] suggs = tryMe.getSugs("t", false, false);
+        String[] suggs = tryMe.getSugs("lank", false, false);
+        for (String str : suggs) {
+            System.out.println(str);
+        }
+        suggs= tryMe.getSugs("lan", true, false);
         for (String str : suggs) {
             System.out.println(str);
         }
@@ -70,19 +74,22 @@ public class testTrie {
     }
 
     public void addDict() throws IOException {
-        File file = new File("englishDictionary.csv");
+        File file = new File("C:/Users/oswal/OneDrive/Documents/School_Folders/csc345/gitrepo345/345workspace/UIwork/src/englishDictionary.csv");
         List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
         lines.stream().forEach(l -> {
             String[] array = l.split(",", 2);
             boolean flag = true;
-            for (int i = 0; i < array[0].length(); i++) {
-                if (!Character.isLetter(array[0].charAt(i))) {
-                    flag = false;
+            if (Character.isLowerCase(array[0].charAt(0))) {
+                flag = false;
+            } else {
+                for (int i = 0; i < array[0].length(); i++) {
+                    if (!Character.isLetter(array[0].charAt(i))) {
+                        flag = false;
+                    }
                 }
             }
             if (flag) {
                 if (array[0].length() > 1 && !act.isWord(array[0].toLowerCase())) {
-
                     act.addWord(array[0].toLowerCase());
                     assertTrue(act.isWord(array[0].toLowerCase()));
                 }
@@ -91,14 +98,9 @@ public class testTrie {
         });
     }
 
-
     public String[] getSugs(String str, boolean backspace, boolean space) {
         return act.autoComplete(str, backspace, space);
     }
-
-
-
-
 
     @Test
     public void testaddDictwords() throws IOException {
