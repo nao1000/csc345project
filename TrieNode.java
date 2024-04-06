@@ -4,22 +4,14 @@ public class TrieNode {
     private char key;
     private TrieNode[] nextChars;
     private int nextCount;
+    private TrieNode parent;
 
-    public TrieNode(char inKey) {
+    public TrieNode(char inKey, TrieNode parent) {
         key = inKey;
         nextChars = new TrieNode[26];
         nextCount = 0;
         terminal = false;
-    }
-
-    public void growArray() {
-        if (nextCount == nextChars.length) {
-            TrieNode[] temp = new TrieNode[nextChars.length * 2];
-            for (int i = 0; i < nextChars.length * 2; i++) {
-                temp[i] = nextChars[i];
-            }
-            nextChars = temp;
-        }
+        this.parent = parent;
     }
 
     public void setTerminal() {
@@ -48,6 +40,10 @@ public class TrieNode {
 
     public void incrCount() {
         nextCount++;
+    }
+
+    public TrieNode jumpUp() {
+        return parent;
     }
 
 }

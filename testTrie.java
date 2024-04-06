@@ -7,13 +7,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 
-
 public class testTrie {
 
+    int k = 0;
 
-
-
-    
     @Test
     public void testAddWord() {
         AutoCompleteTrie trie = new AutoCompleteTrie();
@@ -23,17 +20,11 @@ public class testTrie {
         trie.addWord("cacti");
         trie.addWord("do");
 
-        trie.addWord("1");
-        trie.addWord("2");
-        trie.addWord("3");
-        trie.addWord("4");
-        trie.addWord("5");
-
-        trie.addWord("6");
-        trie.addWord("7");
-        trie.addWord("8");
-        trie.addWord("9");
-        trie.addWord("10");
+        trie.addWord("cat");
+        trie.addWord("cattle");
+        trie.addWord("cactus");
+        trie.addWord("cacti");
+        trie.addWord("do");
 
         trie.addWord("cat");
         trie.addWord("cattle");
@@ -41,56 +32,15 @@ public class testTrie {
         trie.addWord("cacti");
         trie.addWord("do");
 
-        trie.addWord("1");
-        trie.addWord("2");
-        trie.addWord("3");
-        trie.addWord("4");
-        trie.addWord("5");
-
-        trie.addWord("6");
-        trie.addWord("7");
-        trie.addWord("8");
-        trie.addWord("9");
-        trie.addWord("10");
         trie.addWord("cat");
         trie.addWord("cattle");
         trie.addWord("cactus");
         trie.addWord("cacti");
         trie.addWord("do");
-
-        trie.addWord("1");
-        trie.addWord("2");
-        trie.addWord("3");
-        trie.addWord("4");
-        trie.addWord("5");
-
-        trie.addWord("6");
-        trie.addWord("7");
-        trie.addWord("8");
-        trie.addWord("9");
-        trie.addWord("10");
-        trie.addWord("cat");
-        trie.addWord("cattle");
-        trie.addWord("cactus");
-        trie.addWord("cacti");
-        trie.addWord("do");
-
-        trie.addWord("1");
-        trie.addWord("2");
-        trie.addWord("3");
-        trie.addWord("4");
-        trie.addWord("5");
-
-        trie.addWord("6");
-        trie.addWord("7");
-        trie.addWord("8");
-        trie.addWord("9");
-        trie.addWord("10");
-
 
         assertTrue(trie.isWord("cat"));
         assertTrue(trie.isWord("cacti"));
-       
+
         assertTrue(trie.isWord("do"));
         assertTrue(!trie.isWord("done"));
         assertTrue(!trie.isWord("at"));
@@ -103,42 +53,79 @@ public class testTrie {
         assertTrue(trie.isWord("cat"));
     }
 
-    public static void main(String[] args) {
-        AutoCompleteTrie trie = new AutoCompleteTrie();
+    public static void main(String[] args) throws IOException {
+        testTrie tryMe = new testTrie();
+        tryMe.addDict();
+        String[] suggs = tryMe.getSugs("t", false, false);
+        for (String str : suggs) {
+            System.out.println(str);
+        }
 
-        trie.addWord("cat");
-        trie.addWord("cattle");
-        trie.addWord("cactus");
-        trie.addWord("cacti");
-        trie.addWord("do");
-        assertTrue(trie.isWord("cat"));
-        System.out.print("leo");
-        //assertTrue(trie.isWord("cattle"));
     }
 
+    private AutoCompleteTrie act;
 
-    // BEWARE!!!
-    // This mf almost blew up my computer
-    @Test
-    public void testDictwords() throws IOException{
+    public testTrie() {
+        act = new AutoCompleteTrie();
+    }
+
+    public void addDict() throws IOException {
         File file = new File("englishDictionary.csv");
-        List<String> lines = Files.readAllLines(file.toPath(),StandardCharsets.UTF_8);
+        List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
         lines.stream().forEach(l -> {
-            String[] array =  l.split(",", 2);
-                System.out.println(array[0]);
+            String[] array = l.split(",", 2);
+            boolean flag = true;
+            for (int i = 0; i < array[0].length(); i++) {
+                if (!Character.isLetter(array[0].charAt(i))) {
+                    flag = false;
+                }
+            }
+            if (flag) {
+                if (array[0].length() > 1 && !act.isWord(array[0].toLowerCase())) {
+
+                    act.addWord(array[0].toLowerCase());
+                    assertTrue(act.isWord(array[0].toLowerCase()));
+                }
+
+            }
         });
     }
 
+
+    public String[] getSugs(String str, boolean backspace, boolean space) {
+        return act.autoComplete(str, backspace, space);
+    }
+
+
+
+
+
     @Test
-    public void testaddDictwords() throws IOException{
+    public void testaddDictwords() throws IOException {
         AutoCompleteTrie trie = new AutoCompleteTrie();
+
         File file = new File("englishDictionary.csv");
-        List<String> lines = Files.readAllLines(file.toPath(),StandardCharsets.UTF_8);
+        List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
         lines.stream().forEach(l -> {
-            String[] array =  l.split(",", 2);
-                // System.out.println(array[0]);
-                trie.addWord(array[0]);
+            String[] array = l.split(",", 2);
+            boolean flag = true;
+            for (int i = 0; i < array[0].length(); i++) {
+                if (!Character.isLetter(array[0].charAt(i))) {
+                    flag = false;
+                }
+            }
+            if (flag) {
+                if (array[0].length() > 1 && !trie.isWord(array[0].toLowerCase())) {
+
+                    trie.addWord(array[0].toLowerCase());
+                    assertTrue(trie.isWord(array[0].toLowerCase()));
+                }
+
+            }
         });
+
+        // break point for debug to look at trie
+        int k = 0;
     }
 
 }
