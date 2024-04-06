@@ -56,14 +56,14 @@ public class testTrie {
     public static void main(String[] args) throws IOException {
         testTrie tryMe = new testTrie();
         tryMe.addDict();
-        String[] suggs = tryMe.getSugs("lank", false, false);
+        String[] suggs = tryMe.getSugs("pl", false, false);
         for (String str : suggs) {
             System.out.println(str);
         }
-        suggs= tryMe.getSugs("lan", true, false);
-        for (String str : suggs) {
-            System.out.println(str);
-        }
+        // suggs= tryMe.getSugs("lan", true, false);
+        // for (String str : suggs) {
+        //     System.out.println(str);
+        // }
 
     }
 
