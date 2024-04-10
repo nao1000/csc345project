@@ -6,4 +6,7 @@ This project created a trie with every word in the English dictionary. We also c
 
 To use this program you need to make sure to have JavaFX downloaded. Once that has happened, you can download the files. To run the program, you compile the startingPoint.java and start typing away. As you type into the box you should see live updates on the next potential. Additionally, the testTrie.java has many assert statements to show how the program is working in different ways. To run that code, just hit run and compile. The code is relatively simple to understand. The program is easy to run and make work.
 
+For the FinalTest.java, you need to make sure that the file path is accurate for your computer. You can do this via eclipse by right-clicking on the download and then copying the file path into where it is read. The FinalTest adds every word in the english dictionary (greater than two characters for convince) to the trie. It then runs an assert statement on every word to see if it is in the trie. It also deletes every word from the trie also checks to see if it was properly deleted. This proves that our Trie works on a large scale fast and accurately.
+
 Collaborators: Kory Smith, Jay Whitney, and Nathan Oswald
+
