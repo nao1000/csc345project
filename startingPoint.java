@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Currency;
 import java.util.List;
 
 //small change
@@ -34,6 +35,9 @@ public class startingPoint extends Application {
 	private Label typeHere = new Label("Type Here");
 	private startingPoint sp;
 
+	private Label sanity = new Label("Why");
+	private Label check = new Label("Fuck");
+
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 
@@ -47,6 +51,8 @@ public class startingPoint extends Application {
 		gPane.add(typeHere, 1, 1);
 		gPane.add(suggestions, 1, 2);
 		gPane.add(sugs, 2, 2);
+		gPane.add(sanity, 4, 1);
+		gPane.add(check, 5, 7);
 		window.setCenter(gPane);
 		Scene scene = new Scene(window, 640, 480);
 		textField.setOnKeyReleased(new TypeThis());
@@ -66,19 +72,29 @@ public class startingPoint extends Application {
 			if (ae.getCode() == KeyCode.BACK_SPACE) {
 				backspace = true;
 			}
-			
+
 			if (ae.getCode() == KeyCode.SPACE) {
 				space = true;
-				String[] temp = c.split(" ");
-				c = temp[temp.length-1];
 			}
 			String suggestions = "";
 
-			for (String item : sp.getSugs(c, backspace, space)) {
-				
-				suggestions += item + ", ";
+			if (c.length() != 0) {
+				if (!backspace && c.length() != 0) {
+					c = " " + c;
+				}
+				for (String item : sp.getSugs(c.substring(c.lastIndexOf(" ") + 1), backspace, space)) {
 
+					suggestions += item + ", ";
+
+				}
+			} else if ((c.lastIndexOf(" ") == c.length() - 1 || backspace) && c.length() - 1 != -1) {
+				for (String item : sp.getSugs("", backspace, space)) {
+
+					suggestions += item + ", ";
+
+				}
 			}
+			sanity.setText(act.curr());
 			sugs.setText(suggestions);
 		}
 	}
@@ -90,22 +106,24 @@ public class startingPoint extends Application {
 	}
 
 	public void addDict() throws IOException {
+		String vowels = "AaEeIiOoUu";
 		File file = new File(
-				"C:/Users/oswal/OneDrive/Documents/School_Folders/csc345/gitrepo345/345workspace/UIwork/src/englishDictionary.csv");
+				"C:/Users/oswal/OneDrive/Documents/School_Folders/csc345/gitrepo345/345workspace/ImportProject/src/englishDictionary.csv");
 		List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
 		lines.stream().forEach(l -> {
-			String[] array = l.split(",", 2);
+			String[] array = l.split(",");
 			boolean flag = true;
-			if (Character.isLowerCase(array[0].charAt(0))) {
-				flag = false;
-			} else {
-				for (int i = 0; i < array[0].length(); i++) {
-					if (!Character.isLetter(array[0].charAt(i))) {
-						flag = false;
-					}
+			int vowCount = 0;
+			for (int i = 0; i < array[0].length(); i++) {
+				if (!Character.isLetter(array[0].charAt(i))) {
+					flag = false;
+				}
+				if (vowels.indexOf(array[0].charAt(i)) != -1) {
+					vowCount++;
 				}
 			}
-			if (flag) {
+
+			if (flag && vowCount > 0) {
 				if (array[0].length() > 1 && !act.isWord(array[0].toLowerCase())) {
 					act.addWord(array[0].toLowerCase());
 					assertTrue(act.isWord(array[0].toLowerCase()));

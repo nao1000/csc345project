@@ -52,7 +52,7 @@ public class TrieNode {
 
     // remove the index
     public void forgetTerminal(char inKey) {
-        terminalIndexes.remove(inKey - 'a');
+    	terminalIndexes.remove(Integer.valueOf(inKey - 'a'));
     }
 
     // getter for terminal
