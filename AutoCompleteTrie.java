@@ -143,52 +143,43 @@ public class AutoCompleteTrie implements Trie {
 	// returns an array of potential strings that come from a certain input
 	public String[] autoComplete(String str, boolean backspace, boolean space) {
 		
-		if (str.length() == 1) {
-			curr = root;
-			curr = curr.getNodes()[str.charAt(0) - 'a'];
-		}
-
-		else if (!backspace && !space) {
-			if (curr.getNodes()[str.charAt(str.length()-1) - 'a'] == null) {
-				charNAs++;
-				return new String[] { "Check", "your", "spelling" };
-			}
-			curr = curr.getNodes()[str.charAt(str.length()-1) - 'a'];
-		}
-		
-		
-		else if (backspace && charNAs > 0) {
+		if (backspace && charNAs > 0) {
 			charNAs--;
-			return new String[] { "Check", "your", "spelling" };
-		}
-		
-		else if (str.length() > 0 && curr == root) {
-			for (int i = 0; i < str.length(); i++) {
-				curr = curr.getNodes()[str.charAt(i) - 'a'];
+			if (charNAs != 0) {
+				return new String[] {"Check", "your", "spelling"};
 			}
 			
 		}
-		
-		else if (backspace && charNAs == 0 && curr.jumpUp() != null) { 
-			curr = curr.jumpUp();
+		else if (!backspace && !space && !str.equals(" ")) {
+			if (curr.getNodes()[str.charAt(str.length() - 1) - 'a'] == null) {
+				charNAs++;
+				return new String[] {"Check", "your", "spelling"};
+			}
+			curr = curr.getNodes()[str.charAt(str.length() - 1) - 'a'];
 		}
 		
+		else if (backspace && str.equals(" ")) {
+			curr = root;
+			return new String[] {"null", "null", "null"};
+		}
+		else if (space) {
+			curr = root;
+			return new String[] { "", "", "" };
+		}
+		
+		else if (backspace && curr == root && str.length() > 0) {
+			for (int i = 0; i < str.length(); i++) {
+				curr = curr.getNodes()[str.charAt(i) - 'a'];
+			}
+		}
+		else if (backspace && !str.equals(" ")) {
+			curr = curr.jumpUp();
+		}
+				
 		String[] suggestions = new String[3];
 		boolean terminal = false;
 		int sugLimit = 10;
 		// if user hits the spacebar, reset curr
-
-		if (space || str.length() == 0) {
-			curr = root;
-			return new String[] { "", "", "" };
-		}
-
-//		if (!backspace) {
-//			if (curr.getNodes()[str.charAt(str.length() - 1) - 'a'] == null) {
-//				return suggestions;
-//			}
-//			curr = curr.getNodes()[str.charAt(str.length() - 1) - 'a'];
-//		}
 
 		for (int i = 0; i < 3; i++) {
 			if (str.length() == 1) {
@@ -198,7 +189,7 @@ public class AutoCompleteTrie implements Trie {
 				sugLimit = 3;
 			}
 
-			if (str.length() < 5) {
+			else if (str.length() < 5) {
 				if (rand.nextDouble(0, 100.0) < 75) {
 					sugLimit = 5;
 				} else {
@@ -219,10 +210,6 @@ public class AutoCompleteTrie implements Trie {
 					curr = this.probableChar2(terminal);
 					sug += curr.getKey();
 					k++;
-				}
-				else {
-					suggestions = new String[] { "Check", "your", "spelling" };
-					break;
 				}
 			}
 			suggestions[i] = sug;
@@ -271,33 +258,4 @@ public class AutoCompleteTrie implements Trie {
 		}
 		return null;
 	}
-
-	// don't delete, just pushed away, scratch work
-	// probabilistic random character generator
-	// Method takes into account the frequency of each character in English and
-	// determines
-	// which path to follow and what word to build
-	// private TrieNode probableChar() {
-
-	// // get a random double
-	// double randomprob = rand.nextDouble(0, 100.121);
-
-	// // iterate through ranges
-	// for (int i = 1; i < 27; i++) {
-
-	// // if random is between a range, return that TrieNode associated with the
-	// character
-	// if (adjusted1[i - 1] <= randomprob && adjusted1[i] >= randomprob) {
-	// if (curr.getNodes()[i - 1] == null) {
-	// for (int k = 0; k < 26; k++) {
-	// if (curr.getNodes()[k] != null) {
-	// return curr.getNodes()[k];
-	// }
-	// }
-	// }
-	// return curr.getNodes()[i - 1];
-	// }
-	// }
-	// return null;
-	// }
 }
