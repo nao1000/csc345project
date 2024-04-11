@@ -42,6 +42,8 @@ public class startingPoint extends Application {
 	private Label completedText = new Label("Text Terminal");
 	private Label completed = new Label();
 	private Label banner = new Label("CSC 345 Project - TrieGenius");
+//	private static Button add2Dict = new Button("YES, Add to Dictionary");
+	private static Label notInDict = new Label("The current word is not in the dictionary. Would you like to add it?");
 
 	private startingPoint sp;
 
@@ -64,6 +66,13 @@ public class startingPoint extends Application {
 		textField.setPrefHeight(150);
 		textField.setMaxWidth(150);
 		gPane.add(suggestionBox, 0, 1);
+		gPane.add(notInDict, 1, 2);
+		notInDict.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+//		gPane.add(add2Dict, 1, 3);
+		
+		notInDict.setVisible(false);
+//		add2Dict.setVisible(false);
+		
 		gPane.add(sugs, 1, 1);
 		sugs.setPrefWidth(150);
 		sugs.setPrefHeight(75);
@@ -77,6 +86,8 @@ public class startingPoint extends Application {
 		// Add Save button
 		Button saveButton = new Button("Save as .txt");
 		saveButton.setOnAction(event -> saveCompletedText());
+		
+
 
 		gPane.add(saveButton, 0, 12);
 
@@ -84,12 +95,30 @@ public class startingPoint extends Application {
 		Scene scene = new Scene(window, 640, 480);
 
 		window.setStyle("-fx-background-color: lightblue;");
-
+//		add2Dict.setOnAction(new AddToDict());
 		textField.setOnKeyReleased(new TypeThis());
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("Default");
 		primaryStage.show();
 
+	}
+	
+//	private class AddToDict implements EventHandler<ActionEvent> {
+//		@Override
+//		public void handle(ActionEvent ae) {
+//			String temp = textField.getText();
+//			System.out.println(temp);
+//			act.addWord(temp);
+//		}
+//	}
+
+	private void manualADD() {
+		
+		String temp = textField.getText();
+		System.out.println(temp);
+		act.addWord(temp);
+		assertTrue(act.isWord(temp));
+		// TODO Auto-generated method stub
 	}
 
 	private class TypeThis implements EventHandler<KeyEvent> {
@@ -175,13 +204,8 @@ public class startingPoint extends Application {
 	}
 
 	public void addDict() throws IOException {
-//		File file = new File(
-//				"C:/Users/oswal/OneDrive/Documents/School_Folders/csc345/gitrepo345/345workspace/UIwork/src/englishDictionary.csv");
-		// File file = new File("/Users/socce/Downloads/csc345project-ExpanedTrieNode
-		// (1)/csc345project-ExpanedTrieNode/englishDictionary.csv");
-		File file = new File(
-				"C:/Users/oswal/OneDrive/Documents/School_Folders/csc345/gitrepo345/345workspace/FX/src/englishDictionary.csv");
-
+		File file = new File("C:/Users/socce/210Workspace/new/src/englishDictionary.csv");
+//		act.addWord("whatt");
 		List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
 		lines.stream().forEach(l -> {
 			String[] array = l.split(",", 2);
@@ -209,4 +233,14 @@ public class startingPoint extends Application {
 		return act.autoComplete(str, backspace, space);
 	}
 
+	public static void hideAdd2Dict() {
+		notInDict.setVisible(false);
+//		add2Dict.setVisible(false);
+	}
+	
+	public static void showAdd2Dict() {
+		notInDict.setVisible(true);
+//		add2Dict.setVisible(true);
+	}
+	
 }
