@@ -142,10 +142,11 @@ public class AutoCompleteTrie implements Trie {
 
 	// returns an array of potential strings that come from a certain input
 	public String[] autoComplete(String str, boolean backspace, boolean space) {
-		
+		startingPoint.hideAdd2Dict();
 		if (backspace && charNAs > 0) {
 			charNAs--;
 			if (charNAs != 0) {
+				startingPoint.showAdd2Dict();
 				return new String[] {"Check", "your", "spelling"};
 			}
 			
@@ -153,6 +154,7 @@ public class AutoCompleteTrie implements Trie {
 		else if (!backspace && !space && !str.equals(" ")) {
 			if (curr.getNodes()[str.charAt(str.length() - 1) - 'a'] == null) {
 				charNAs++;
+				startingPoint.showAdd2Dict();
 				return new String[] {"Check", "your", "spelling"};
 			}
 			curr = curr.getNodes()[str.charAt(str.length() - 1) - 'a'];
