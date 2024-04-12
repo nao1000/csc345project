@@ -1,3 +1,13 @@
+/*
+ * Authors: Nathan Oswald, Jay Whitney, Kory Smith
+ * 
+ * Description:
+ * 				This file implements a trie as an AutoCompleteTrie (ACT).
+ * 				It implements the typical add, del, and isWord, while also
+ * 				implementing other functions to enable the probablistic choices
+ * 				and getting suggestions.
+ */
+
 import java.util.Random;
 import java.util.ArrayList;
 
@@ -93,7 +103,7 @@ public class AutoCompleteTrie implements Trie {
 			return false;
 		}
 
-		// identical to how addWord adds the character TrieNodes, just traverseing
+		// identical to how addWord adds the character TrieNodes, just traversing
 		// instead
 		TrieNode[] nextChars = curr.getNodes();
 		if (nextChars[word.charAt(0) - 'a'] == null) {

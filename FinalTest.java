@@ -1,3 +1,15 @@
+/*
+ * Authors: Nathan Oswald, Jay Whitney, Kory Smith
+ * 
+ * Description:
+ * 				This is a test file that adds the entire dictionary to our 
+ *              trie date structure, and checks if the word is there after.
+ *              And then it will also go through and add all the words and
+ *              delete everything to ensure that works as well so there
+ *              are many addWords, delWords, and isWords being tested with
+ *              a plethora of inputs.
+ */
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
@@ -21,7 +33,7 @@ public class FinalTest {
         AutoCompleteTrie trie = new AutoCompleteTrie();
         // This stores the File path into the file
         File file = new File(
-                "C:/Users/oswal/OneDrive/Documents/School_Folders/csc345/gitrepo345/345workspace/ImportProject/src/englishDictionary.csv");
+                "englishDictionary.csv");
         // This creates a BufferedReader for the file
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String st;
@@ -39,10 +51,11 @@ public class FinalTest {
                         flag = false;
                     }
                 }
-                // If all numeric add to the trie
+                // If all alphabetic add to the trie
                 if (flag) {
                     if (test[0].length() > 1 && !trie.isWord(test[0].toLowerCase())) {
                         trie.addWord(test[0].toLowerCase());
+                        System.out.print(1);
                         assertTrue(trie.isWord(test[0].toLowerCase()));
                     }
                 }
@@ -62,7 +75,7 @@ public class FinalTest {
         AutoCompleteTrie trie = new AutoCompleteTrie();
         // The file path
         File file = new File(
-                "C:/Users/oswal/OneDrive/Documents/School_Folders/csc345/gitrepo345/345workspace/ImportProject/src/englishDictionary.csv");
+                "englishDictionary.csv");
 
         // This gets a BufferedReader for the file
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {

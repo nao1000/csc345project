@@ -1,3 +1,12 @@
+/*
+ * Authors: Nathan Oswald, Jay Whitney, Kory Smith
+ * 
+ * Description:
+ * 				This application creates a UI where the user can type
+ * 				and be given suggestions for the next words to type
+ * 				in real time.
+ */
+
 import javafx.event.ActionEvent;
 
 import static org.junit.Assert.assertTrue;
@@ -17,7 +26,6 @@ import javafx.application.Application;
 import javafx.event.EventHandler;
 
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -38,13 +46,13 @@ public class AutoCompleteUI extends Application {
 		launch(args);
 	}
 
+	// set the varioues fields
 	private TextField textField = new TextField();
 	private Label sugs = new Label();
 	private Label suggestionBox = new Label("Suggestions");
 	private Label typeHere = new Label("Type Here");
 	private Label completedText = new Label("Text Terminal");
 	private Label completed = new Label();
-	private Label banner = new Label("CSC 345 Project - TrieGenius");
 	private static Label notInDict = new Label("The current word is not in the dictionary.");
 
 	private AutoCompleteUI acUI;
@@ -52,6 +60,7 @@ public class AutoCompleteUI extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 
+		// set up the interface
 		Font font = new Font("Gabriola", 24);
 		acUI = new AutoCompleteUI();
 		acUI.addDict();
@@ -82,16 +91,13 @@ public class AutoCompleteUI extends Application {
 		completed.setPrefHeight(75);
 		completed.setStyle("-fx-border-color: black; -fx-border-width: 1px; -fx-border-style: solid;");
 
-		// Add Save button
-		Button saveButton = new Button("Save as .txt");
-		saveButton.setOnAction(event -> saveCompletedText());
-
-		gPane.add(saveButton, 0, 12);
-
 		window.setCenter(gPane);
 		Scene scene = new Scene(window, 640, 480);
 
 		window.setStyle("-fx-background-color: lightblue;");
+
+		// Allow for a text field to type in that will handle the event and retrieve
+		// suggestions
 		textField.setOnKeyReleased(new TypeThis());
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("Default");
@@ -103,6 +109,8 @@ public class AutoCompleteUI extends Application {
 
 		@Override
 		public void handle(KeyEvent ae) {
+
+			// get the string from the text field
 			String c = textField.getText();
 			completed.setText(c);
 			c = c.toLowerCase();
@@ -110,67 +118,38 @@ public class AutoCompleteUI extends Application {
 			boolean backspace = false;
 			boolean space = false;
 
+			// note if there is backspace pressed
 			if (ae.getCode() == KeyCode.BACK_SPACE) {
 				backspace = true;
 			}
 
+			// note if there is a space pressed
 			if (ae.getCode() == KeyCode.SPACE) {
 				space = true;
 			}
 
-			if (ae.isControlDown() && ae.getCode() == KeyCode.S) {
-				saveCompletedText();
-			}
-
 			String suggestions = "";
+
+			// if there was a space, we just run the getSugs to set it properly (new string
+			// will be typed)
 			if (c.length() == 0 || space) {
 				acUI.getSugs(" ", backspace, space);
+
+				// first thing to be typed
 			} else if (c.lastIndexOf(" ") == -1) {
 				for (String item : acUI.getSugs(c, backspace, space)) {
 					suggestions += item + " \n";
 				}
+
+				// any word after
 			} else {
 				for (String item : acUI.getSugs(c.substring(c.lastIndexOf(" ") + 1), backspace, space)) {
 					suggestions += item + " \n";
 				}
 			}
+
+			// set the suggestions
 			sugs.setText(suggestions);
-		}
-	}
-
-	private void saveCompletedText() {
-		TextInputDialog dialog = new TextInputDialog();
-		dialog.setTitle("Save Text");
-		dialog.setHeaderText("Save Text as .txt File");
-		dialog.setContentText("Please enter the file name:");
-
-		// Traditional way to get the response value.
-		String fileName = dialog.showAndWait().orElse("completedText");
-
-		if (!fileName.isEmpty()) {
-			String completedText = completed.getText();
-			try {
-				Files.write(Paths.get(fileName + ".txt"), completedText.getBytes());
-				Alert alert = new Alert(AlertType.INFORMATION);
-				alert.setTitle("Information Dialog");
-				alert.setHeaderText(null);
-				alert.setContentText("File saved successfully as: " + fileName + ".txt to: "
-						+ Paths.get(fileName + ".txt").toAbsolutePath());
-				alert.showAndWait();
-			} catch (IOException e) {
-				System.err.println("Failed to save completed text: " + e.getMessage());
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.setTitle("Error Dialog");
-				alert.setHeaderText(null);
-				alert.setContentText("Failed to save completed text: " + e.getMessage());
-				alert.showAndWait();
-			}
-		} else {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Warning Dialog");
-			alert.setHeaderText(null);
-			alert.setContentText("File name cannot be empty!");
-			alert.showAndWait();
 		}
 	}
 
@@ -216,6 +195,7 @@ public class AutoCompleteUI extends Application {
 		}
 	}
 
+	// return the suggestions by calling the autoComplete method
 	public String[] getSugs(String str, boolean backspace, boolean space) {
 		return act.autoComplete(str, backspace, space);
 	}

@@ -1,3 +1,12 @@
+/*
+ * Authors: Nathan Oswald, Jay Whitney, Kory Smith
+ * 
+ * Description:
+ * 				This file creates the TrieNodes that go into creating the overall trie
+ *              data structure. The key value is a lowercase character and it stores its
+ *              children in a TrieNode[] array.
+ */
+
 import java.util.ArrayList;
 import java.util.Collections;
 
