@@ -120,7 +120,7 @@ public class testTrie {
 		// File file = new
 		// File("C:/Users/oswal/OneDrive/Documents/School_Folders/csc345/gitrepo345/345workspace/ImportProject/src/englishDictionary.csv");
 		File file = new File(
-				"C:/Users/oswal/OneDrive/Documents/School_Folders/csc345/gitrepo345/345workspace/ImportProject/src/ngram_freq_dict.csv");
+			"C:/Users/oswal/OneDrive/Documents/School_Folders/csc345/gitrepo345/345workspace/ImportProject/src/englishDictionary.csv");
 		List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
 		lines.stream().forEach(l -> {
 			String[] array = l.split(",", 2);

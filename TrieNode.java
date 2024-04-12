@@ -3,17 +3,18 @@ import java.util.Collections;
 
 public class TrieNode {
 
-    private boolean terminal;                          // whether node indicates a word
-    private char key;                                  // the character of the node
-    private TrieNode[] nextChars;                      // array of all potential characters following the curr
-    private int nextCount;                             // how many potential chars there are
-    private TrieNode parent;                           // the previous letter in the string
-    private ArrayList<Integer> terminalIndexes;        // array of all the indices of terminals following cur (used for probability)
-    private ArrayList<Integer> charIndexes;            // indicies of all possible chars following curr (used for probability)
+    private boolean terminal; // whether node indicates a word
+    private char key; // the character of the node
+    private TrieNode[] nextChars; // array of all potential characters following the curr
+    private int nextCount; // how many potential chars there are
+    private TrieNode parent; // the previous letter in the string
+    private ArrayList<Integer> terminalIndexes; // array of all the indices of terminals following cur (used for
+                                                // probability)
+    private ArrayList<Integer> charIndexes; // indicies of all possible chars following curr (used for probability)
 
     public TrieNode(char inKey, TrieNode parent) {
         key = inKey;
-        nextChars = new TrieNode[26];                  // only storing lowercase letters, so only need 26 spots
+        nextChars = new TrieNode[26]; // only storing lowercase letters, so only need 26 spots
         nextCount = 0;
         terminal = false;
         this.parent = parent;
@@ -21,7 +22,7 @@ public class TrieNode {
         charIndexes = new ArrayList<Integer>();
 
         // no parent for the root
-        if (parent != null ) {
+        if (parent != null) {
             parent.trackChar(inKey);
         }
     }
@@ -52,7 +53,7 @@ public class TrieNode {
 
     // remove the index
     public void forgetTerminal(char inKey) {
-    	terminalIndexes.remove(Integer.valueOf(inKey - 'a'));
+        terminalIndexes.remove(Integer.valueOf(inKey - 'a'));
     }
 
     // getter for terminal
@@ -85,10 +86,12 @@ public class TrieNode {
         nextCount--;
     }
 
+    // access to all indices of adjacent characters that form a full word
     public ArrayList<Integer> terminalList() {
         return terminalIndexes;
     }
-    
+
+    // access to all indices of adjacent characters
     public ArrayList<Integer> charIndexes() {
         return charIndexes;
     }

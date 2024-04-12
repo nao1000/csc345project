@@ -2,7 +2,10 @@ import javafx.event.ActionEvent;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -29,7 +32,7 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
-public class startingPoint extends Application {
+public class AutoCompleteUI extends Application {
 
 	public static void main(String[] args) throws Exception {
 		launch(args);
@@ -42,16 +45,16 @@ public class startingPoint extends Application {
 	private Label completedText = new Label("Text Terminal");
 	private Label completed = new Label();
 	private Label banner = new Label("CSC 345 Project - TrieGenius");
+	private static Label notInDict = new Label("The current word is not in the dictionary.");
 
-	private startingPoint sp;
+	private AutoCompleteUI acUI;
 
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 
-//        Image image = new Image("/Users/socce/210Workspace/JavaFXproject/ua_horiz_rgb_black_4.jpg");
 		Font font = new Font("Gabriola", 24);
-		sp = new startingPoint();
-		sp.addDict();
+		acUI = new AutoCompleteUI();
+		acUI.addDict();
 		BorderPane window = new BorderPane();
 		GridPane gPane = new GridPane();
 		gPane.setHgap(10);
@@ -64,6 +67,11 @@ public class startingPoint extends Application {
 		textField.setPrefHeight(150);
 		textField.setMaxWidth(150);
 		gPane.add(suggestionBox, 0, 1);
+		gPane.add(notInDict, 1, 2);
+		notInDict.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+
+		notInDict.setVisible(false);
+
 		gPane.add(sugs, 1, 1);
 		sugs.setPrefWidth(150);
 		sugs.setPrefHeight(75);
@@ -84,7 +92,6 @@ public class startingPoint extends Application {
 		Scene scene = new Scene(window, 640, 480);
 
 		window.setStyle("-fx-background-color: lightblue;");
-
 		textField.setOnKeyReleased(new TypeThis());
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("Default");
@@ -98,6 +105,7 @@ public class startingPoint extends Application {
 		public void handle(KeyEvent ae) {
 			String c = textField.getText();
 			completed.setText(c);
+			c = c.toLowerCase();
 
 			boolean backspace = false;
 			boolean space = false;
@@ -116,19 +124,17 @@ public class startingPoint extends Application {
 
 			String suggestions = "";
 			if (c.length() == 0 || space) {
-				sp.getSugs(" ", backspace, space);
+				acUI.getSugs(" ", backspace, space);
 			} else if (c.lastIndexOf(" ") == -1) {
-				for (String item : sp.getSugs(c, backspace, space)) {
+				for (String item : acUI.getSugs(c, backspace, space)) {
 					suggestions += item + " \n";
 				}
-			}
-			else {
-				for (String item : sp.getSugs(c.substring(c.lastIndexOf(" ") + 1), backspace, space)) {
+			} else {
+				for (String item : acUI.getSugs(c.substring(c.lastIndexOf(" ") + 1), backspace, space)) {
 					suggestions += item + " \n";
 				}
 			}
 			sugs.setText(suggestions);
-			completed.setText(c);
 		}
 	}
 
@@ -170,43 +176,56 @@ public class startingPoint extends Application {
 
 	private AutoCompleteTrie act = new AutoCompleteTrie();
 
-	public startingPoint() throws IOException {
+	public AutoCompleteUI() throws IOException {
 		addDict();
 	}
 
-	public void addDict() throws IOException {
-//		File file = new File(
-//				"C:/Users/oswal/OneDrive/Documents/School_Folders/csc345/gitrepo345/345workspace/UIwork/src/englishDictionary.csv");
-		// File file = new File("/Users/socce/Downloads/csc345project-ExpanedTrieNode
-		// (1)/csc345project-ExpanedTrieNode/englishDictionary.csv");
+	public void addDict() {
+		// This stores the File path into the file
 		File file = new File(
-				"C:/Users/oswal/OneDrive/Documents/School_Folders/csc345/gitrepo345/345workspace/FX/src/englishDictionary.csv");
+				"C:/Users/oswal/OneDrive/Documents/School_Folders/csc345/gitrepo345/345workspace/ImportProject/src/englishDictionary.csv");
+		// This creates a BufferedReader for the file
+		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+			String st;
 
-		List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
-		lines.stream().forEach(l -> {
-			String[] array = l.split(",", 2);
-			boolean flag = true;
-			if (Character.isLowerCase(array[0].charAt(0))) {
-				flag = false;
-			} else {
-				for (int i = 0; i < array[0].length(); i++) {
-					if (!Character.isLetter(array[0].charAt(i))) {
+			// This iterates through the dictionary file line by line
+			while ((st = br.readLine()) != null) {
+				boolean flag = true;
+				// Splits by the commas and then on the hyphen
+				String[] test = st.split(",");
+				test = test[0].split("-");
+
+				// This checks to see if there is any not alphabetical characters in the string
+				for (int i = 0; i < test[0].length(); i++) {
+					if (!Character.isLetter(test[0].charAt(i))) {
 						flag = false;
 					}
 				}
-			}
-			if (flag) {
-				if (array[0].length() > 1 && !act.isWord(array[0].toLowerCase())) {
-					act.addWord(array[0].toLowerCase());
-					assertTrue(act.isWord(array[0].toLowerCase()));
+				// If all numeric add to the trie
+				if (flag) {
+					if (test[0].length() > 1 && !act.isWord(test[0].toLowerCase())) {
+						act.addWord(test[0].toLowerCase());
+					}
 				}
-
 			}
-		});
+			// Catches for the in case the file is not found
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public String[] getSugs(String str, boolean backspace, boolean space) {
 		return act.autoComplete(str, backspace, space);
+	}
+
+	public static void hideAdd2Dict() {
+		notInDict.setVisible(false);
+	}
+
+	public static void showAdd2Dict() {
+		notInDict.setVisible(true);
 	}
 
 }

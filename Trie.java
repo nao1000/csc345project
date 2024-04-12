@@ -1,8 +1,5 @@
 public interface Trie {
 
-    // Keeps track of how many total words the Trie has stored
-    public int totalWords();
-
     // Add a word to the Trie
     public void addWord(String word);
 
